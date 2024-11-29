@@ -1,34 +1,75 @@
+import { Request, Response } from "express";
 import { prisma } from "../prismaClient";
 
-class UserProxy {
-  async getAllUsers() {
-    return prisma.user.findMany();
+export class UserProxy {
+  // Get all users
+  async GEt_ALL_USERS(req: Request, res: Response) {
+    try {
+      const users = await prisma.user.findMany();
+      res.json(users);
+    } catch (error) {
+      res.status(500).json({ error: "Error fetching users" });
+    }
   }
 
-  async getUserById(id: number) {
-    return prisma.user.findUnique({
-      where: { id },
-    });
+  // Get user by ID
+  async GET_USER_BY_ID(req: Request, res: Response) {
+    try {
+      const id = parseInt(req.params.id);
+      const user = await prisma.user.findUnique({
+        where: { id },
+      });
+      if (user) {
+        res.json(user);
+      } else {
+        res.status(404).json({ error: "User not found" });
+      }
+    } catch (error) {
+      res.status(500).json({ error: "Error fetching user" });
+    }
   }
 
-  async createUser(data: { name: string; email: string }) {
-    return prisma.user.create({
-      data,
-    });
+  // Create a new user
+  async CREATE_USER(req: Request, res: Response) {
+    try {
+      const { name, email } = req.body;
+      const user = await prisma.user.create({
+        data: { name, email },
+      });
+      res.status(201).json(user);
+    } catch (error) {
+      res.status(500).json({ error: "Error creating user" });
+    }
   }
 
-  async updateUser(id: number, data: { name?: string; email?: string }) {
-    return prisma.user.update({
-      where: { id },
-      data,
-    });
+  // Update a user by ID
+  async UPDATE_USER(req: Request, res: Response) {
+    try {
+      const id = parseInt(req.params.id);
+      const { name, email } = req.body;
+      const user = await prisma.user.update({
+        where: { id },
+        data: { name, email },
+      });
+      res.json(user);
+    } catch (error) {
+      res.status(500).json({ error: "Error updating user" });
+    }
   }
 
-  async deleteUser(id: number) {
-    return prisma.user.delete({
-      where: { id },
-    });
+  // Delete a user by ID
+  async DELETE_USER(req: Request, res: Response) {
+    try {
+      const id = parseInt(req.params.id);
+      await prisma.user.delete({
+        where: { id },
+      });
+      res.status(204).send();
+    } catch (error) {
+      res.status(500).json({ error: "Error deleting user" });
+    }
   }
 }
 
-export const userProxy = new UserProxy();
+
+export const UserProxyInstance = new UserProxy();
