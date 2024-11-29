@@ -17,7 +17,7 @@ Este proyecto es una API diseñada para la gestión de medicamentos en una aplic
 - **Prisma**: ORM para interactuar con la base de datos.
 - **TypeScript**: Lenguaje tipado para mayor robustez del código.
 - **JWT**: Utilizado para la autenticación.
-- **PostgreSQL**: Sistema de gestión de bases de datos.
+- **Sqlite**: Sistema de gestión de bases de datos.
 
 ## Instalación y Configuración
 
