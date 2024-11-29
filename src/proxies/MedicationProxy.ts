@@ -1,6 +1,10 @@
 import { Request, Response } from "express";
 import { medicationService } from "../services/MedicationServices";
 
+interface CustomRequest extends Request {
+  user?: any;
+}
+
 export class MedicationProxy {
   // GET_ALL_MEDICATIONS
   async GET_ALL_MEDICATIONS(req: Request, res: Response) {
@@ -28,10 +32,14 @@ export class MedicationProxy {
   }
 
   // CREATE_MEDICATION
-  async CREATE_MEDICATION(req: Request, res: Response) {
+  async CREATE_MEDICATION(req: CustomRequest, res: Response) {
     try {
       const data = req.body;
-      const medication = await medicationService.createMedication(data);
+      const medicationModel = {
+        ...data,
+        userId: req["user"]
+      }
+      const medication = await medicationService.createMedication(medicationModel);
       res.status(201).json(medication);
     } catch (error) {
       res.status(500).json({ error: "Error creating medication" });
