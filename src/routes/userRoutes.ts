@@ -1,25 +1,23 @@
 import { Router } from "express";
-import { prisma } from "../prismaClient";
+import { userProxy } from "../proxies/UserProxy";
 
 const router = Router();
 
-// Obtener todos los usuarios
+// Get all users
 router.get("/users", async (req, res) => {
   try {
-    const users = await prisma.user.findMany();
+    const users = await userProxy.getAllUsers();
     res.json(users);
   } catch (error) {
     res.status(500).json({ error: "Error fetching users" });
   }
 });
 
-// Obtener un usuario por ID
+// Get user by ID
 router.get("/:id", async (req, res) => {
   try {
-    const { id } = req.params;
-    const user = await prisma.user.findUnique({
-      where: { id: parseInt(id) },
-    });
+    const id = parseInt(req.params.id);
+    const user = await userProxy.getUserById(id);
     if (user) {
       res.json(user);
     } else {
@@ -30,41 +28,34 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-// Crear un nuevo usuario
+// Create a new user
 router.post("/user", async (req, res) => {
   try {
     const { name, email } = req.body;
-    const user = await prisma.user.create({
-      data: { name, email },
-    });
+    const user = await userProxy.createUser({ name, email });
     res.status(201).json(user);
   } catch (error) {
     res.status(500).json({ error: "Error creating user" });
   }
 });
 
-// Actualizar un usuario por ID
+// Update a user by ID
 router.put("/:id", async (req, res) => {
   try {
-    const { id } = req.params;
+    const id = parseInt(req.params.id);
     const { name, email } = req.body;
-    const user = await prisma.user.update({
-      where: { id: parseInt(id) },
-      data: { name, email },
-    });
+    const user = await userProxy.updateUser(id, { name, email });
     res.json(user);
   } catch (error) {
     res.status(500).json({ error: "Error updating user" });
   }
 });
 
-// Eliminar un usuario por ID
+// Delete a user by ID
 router.delete("/:id", async (req, res) => {
   try {
-    const { id } = req.params;
-    await prisma.user.delete({
-      where: { id: parseInt(id) },
-    });
+    const id = parseInt(req.params.id);
+    await userProxy.deleteUser(id);
     res.status(204).send();
   } catch (error) {
     res.status(500).json({ error: "Error deleting user" });
