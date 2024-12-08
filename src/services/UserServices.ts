@@ -11,13 +11,14 @@ class UserService {
     });
   }
 
-  async createUser(data: { name: string; email: string }) {
+
+  async createUser(data: { username: string; email: string, nombres: string, password:string,  rol:string, estado:string }) {
     return prisma.user.create({
       data,
     });
   }
 
-  async updateUser(id: number, data: { name?: string; email?: string }) {
+  async updateUser(id: number, data: { username?: string; email?: string }) {
     return prisma.user.update({
       where: { id },
       data,

@@ -18,7 +18,7 @@ class MedicationService {
     });
   }
 
-  async updateMedication(id: number, data: { name?: string; description?: string }) {
+  async updateMedication(id: number, data: { username?: string; description?: string }) {
     return prisma.medication.update({
       where: { id },
       data,

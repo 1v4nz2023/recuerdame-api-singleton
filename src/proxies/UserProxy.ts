@@ -29,12 +29,17 @@ export class UserProxy {
     }
   }
 
+  // nombres String
+  // password String
+  // rol String
+  // estado String
+
   // Create a new user
   async CREATE_USER(req: Request, res: Response) {
     try {
-      const { name, email } = req.body;
+      const { username, email, nombres, password, rol, estado } = req.body;
       const user = await prisma.user.create({
-        data: { name, email },
+        data: { username, email, nombres, password, rol, estado },
       });
       res.status(201).json(user);
     } catch (error) {
@@ -46,10 +51,10 @@ export class UserProxy {
   async UPDATE_USER(req: Request, res: Response) {
     try {
       const id = parseInt(req.params.id);
-      const { name, email } = req.body;
+      const { username, email, nombres, password, rol, estado } = req.body;
       const user = await prisma.user.update({
         where: { id },
-        data: { name, email },
+        data: { username, email, nombres, password, rol, estado},
       });
       res.json(user);
     } catch (error) {
