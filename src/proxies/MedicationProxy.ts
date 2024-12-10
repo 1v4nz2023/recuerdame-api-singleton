@@ -1,8 +1,10 @@
 import { Request, Response } from "express";
 import { medicationService } from "../services/MedicationServices";
+import { Medication } from "@prisma/client";
 
 interface CustomRequest extends Request {
   user?: any;
+  body: Medication
 }
 
 export class MedicationProxy {
@@ -35,14 +37,15 @@ export class MedicationProxy {
   async CREATE_MEDICATION(req: CustomRequest, res: Response) {
     try {
       const data = req.body;
-      const medicationModel = {
+      const medicationModel: Medication = {
         ...data,
-        userId: req["user"]
+        start_date: new Date(data.start_date),
+        userId: parseInt(req["user"])
       }
       const medication = await medicationService.createMedication(medicationModel);
       res.status(201).json(medication);
     } catch (error) {
-      res.status(500).json({ error: "Error creating medication" });
+      res.status(500).json({ error: `Error creating medication, ${error}` });
     }
   }
 

@@ -1,5 +1,6 @@
 import express from "express";
 import userRouter from "./routes/userRoutes";
+import medicationRouter from "./routes/medicationRoutes";
 import dotenv from "dotenv";
 import cors from "cors";  // Importa el paquete cors
 
@@ -20,6 +21,7 @@ app.use(express.json());
 
 // Rutas principales
 app.use("/api", userRouter);
+app.use("/api/manage", medicationRouter);
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
